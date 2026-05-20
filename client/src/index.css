@@ -1,0 +1,25 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --font-sans: "Inter", sans-serif;
+
+  --color-emerald-700: #047857;
+  --color-emerald-800: #065f46;
+  --color-emerald-900: #064e3b;
+
+  --color-primary: #065f46;
+  --color-primary-focus: #047857;
+  --color-accent-badge: #3f6212;
+
+  --color-background-light: #ffffff;
+  --color-background-dark: #221610;
+}
+
+.max-w-content {
+  max-width: 1200px;
+}
+
+.transition-base {
+  transition: all 0.2s ease-in-out;
+}

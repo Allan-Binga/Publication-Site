@@ -1,0 +1,55 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --font-sans: "Inter", sans-serif;
+
+  --color-emerald-700: #047857;
+  --color-emerald-800: #065f46;
+  --color-emerald-900: #064e3b;
+
+  --color-primary: #065f46;
+  --color-primary-focus: #047857;
+  --color-accent-badge: #3f6212;
+
+  --color-background-light: #ffffff;
+  --color-background-dark: #221610;
+}
+
+.max-w-content {
+  max-width: 1200px;
+}
+
+.transition-base {
+  transition: all 0.2s ease-in-out;
+}
+
+/* TINYMCE */
+
+/* Kill outer container border */
+.tox.tox-tinymce {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Remove internal wrapper borders */
+.tox .tox-editor-container {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Remove edit area border */
+.tox .tox-edit-area {
+  border: none !important;
+}
+
+/* Remove focus outline completely */
+.tox.tox-tinymce--focus {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Kill iframe focus glow */
+.tox iframe {
+  border: none !important;
+}
