@@ -17,7 +17,8 @@ app.use(express.json())
 //Cors
 const allowedOrigins = [
     "http://localhost:5173",
-    "http://localhost:5174"
+    "http://localhost:5174",
+    "http://159.65.23.201:3000"
 ]
 
 const corsOptions = {
