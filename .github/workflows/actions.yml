@@ -52,7 +52,7 @@ jobs:
             cd ..
 
             echo "Restarting PM2..."
-            pm2 reload publication-api || pm2 start index.js --name publication-api
+            pm2 reload publication-site || pm2 start index.js --name publication-site
 
             echo "Deployment complete!"
           EOF
