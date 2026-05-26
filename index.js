@@ -16,9 +16,9 @@ app.use(express.json())
 
 //Cors
 const allowedOrigins = [
-  "http://skirill.org",
-  "http://www.skirill.org",
-  "http://admin.skirill.org",
+  "https://skirill.org",
+  "https://www.skirill.org",
+  "https://admin.skirill.org",
   "http://localhost:5173",
   "http://localhost:5174"
 ];
