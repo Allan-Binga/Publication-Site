@@ -16,11 +16,11 @@ app.use(express.json())
 
 //Cors
 const allowedOrigins = [
+  "https://skiril.org",
+  "https://admin.skiril.org",
   "http://localhost:5173",
-  "http://localhost:5174",
-  "http://159.65.23.201",
-  "http://159.65.23.201/admin"
-]
+  "http://localhost:5174"
+];
 
 
 const corsOptions = {
