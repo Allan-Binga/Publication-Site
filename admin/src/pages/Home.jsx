@@ -273,18 +273,18 @@ function Home() {
                                                     onClick={() => navigate(`/articles/article/${article.id}`)}
                                                     className="hover:bg-slate-50 cursor-pointer"
                                                 >
-                                                    <td className="px-6 py-4 font-medium text-sm">
+                                                    <td className="px-6 py-4 font-medium text-xs">
                                                         {article.title}
                                                     </td>
 
-                                                    <td className="px-6 py-4 text-slate-500 text-sm">
+                                                    <td className="px-6 py-4 text-slate-500 text-xs">
                                                         {article.category || "Uncategorized"}
                                                     </td>
 
                                                     <td className="px-6 py-4">
 
                                                         <span
-                                                            className={`px-2 py-1 text-xs rounded-full ${article.status === "published"
+                                                            className={`px-2 py-1 text-xs rounded-lg ${article.status === "published"
                                                                 ? "bg-emerald-100 text-emerald-800"
                                                                 : "bg-slate-100 text-slate-700"
                                                                 }`}

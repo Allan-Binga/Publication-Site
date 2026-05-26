@@ -171,21 +171,21 @@ function EditArticle() {
                     {/* Header */}
                     <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                         <div className="flex flex-col gap-1">
-                            <h1 className="text-3xl font-black tracking-tight text-slate-900">
+                            <h1 className="text-2xl font-black tracking-tight text-slate-900">
                                 Edit Article
                             </h1>
-                            <p className="text-slate-600 text-base">
+                            <p className="text-slate-600 text-sm">
                                 Edit your article or save and pick up later.
                             </p>
                         </div>
 
                         <div className="flex items-center gap-3">
-                            <button onClick={() => handleSubmit("draft")} className="flex items-center gap-2 px-4 py-2.5 border-2 border-emerald-800 text-emerald-800 font-semibold rounded-sm hover:bg-emerald-50 transition cursor-pointer">
+                            <button onClick={() => handleSubmit("draft")} className="flex text-sm items-center gap-2 px-4 py-2 border border-emerald-800 text-emerald-800 font-semibold rounded-sm hover:bg-emerald-50 transition cursor-pointer">
                                 {loading ? <Spinner /> : <Save size={18} />}
                                 {loading ? "Saving..." : "Save Draft"}
                             </button>
 
-                            <button onClick={() => handleSubmit("published")} className="flex items-center gap-2 px-6 py-2.5 bg-emerald-800 text-white font-semibold rounded-sm shadow hover:bg-emerald-900 transition cursor-pointer">
+                            <button onClick={() => handleSubmit("published")} className="flex text-sm items-center gap-2 px-4 py-2 bg-emerald-800 text-white font-semibold rounded-sm shadow hover:bg-emerald-900 transition cursor-pointer">
                                 {loading ? <Spinner /> : <Send size={18} />}
                                 {loading ? "Saving..." : "Save Changes"}
                             </button>
@@ -197,13 +197,13 @@ function EditArticle() {
                         {/* LEFT COLUMN */}
                         <div className="space-y-6 order-2 lg:order-1">
 
-                            <div className="bg-white rounded-lg border border-slate-300 overflow-hidden">
+                            <div className="bg-white rounded-md border border-slate-300 overflow-hidden">
 
                                 <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50">
 
                                     <div className="flex items-center gap-2">
                                         <FileText className="text-emerald-800" size={18} />
-                                        <h2 className="font-bold text-lg text-slate-800">
+                                        <h2 className="font-bold text-sm text-slate-800">
                                             Article Content
                                         </h2>
                                     </div>
@@ -244,16 +244,16 @@ function EditArticle() {
                         {/* RIGHT SIDEBAR */}
                         <div className="space-y-6 order-1 lg:order-2">
                             {/* Article Details */}
-                            <section className="bg-white rounded-lg border border-slate-300 p-6">
-                                <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                            <section className="bg-white rounded-md border border-slate-300 p-6">
+                                <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2 text-sm">
                                     <Settings className="text-emerald-800" size={18} />
                                     Article Details
                                 </h3>
-                                <div className="space-y-4">
+                                <div className="space-y-6 order-1 lg:order-2">
 
                                     {/* Title */}
                                     <div>
-                                        <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+                                        <label className="block text-xs font-semibold text-slate-700 mb-1.5">
                                             Article Title
                                         </label>
                                         <input
@@ -261,33 +261,33 @@ function EditArticle() {
                                             value={formData.title}
                                             onChange={handleTitleChange}
                                             placeholder="e.g. Scaling Vector Databases"
-                                            className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"
+                                            className="w-full rounded-md text-xs border border-slate-200 bg-slate-50 px-4 py-3 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"
                                         />
                                     </div>
 
                                     {/* Slug */}
                                     <div>
-                                        <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+                                        <label className="block text-xs font-semibold text-slate-700 mb-1.5">
                                             Slug
                                         </label>
 
                                         <input
                                             readOnly
                                             value={formData.slug}
-                                            className="w-full rounded-lg border border-slate-200 bg-slate-200 text-slate-500 px-4 py-3 text-sm cursor-not-allowed focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"
+                                            className="w-full text-xs rounded-md border border-slate-200 bg-slate-200 text-slate-500 px-4 py-3 cursor-not-allowed focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"
                                         />
                                     </div>
 
                                     {/* Category */}
                                     <div>
-                                        <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+                                        <label className="block text-xs font-semibold text-slate-700 mb-1.5">
                                             Category
                                         </label>
 
                                         <select
                                             value={formData.category}
                                             onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                                            className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"
+                                            className="w-full rounded-md border border-slate-200 bg-slate-50 px-4 py-3 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition text-xs"
                                         >
                                             <option>Artificial Intelligence</option>
                                             <option>Data Engineering</option>
@@ -306,7 +306,7 @@ function EditArticle() {
 
                                     {/* Excerpt */}
                                     <div>
-                                        <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+                                        <label className="block text-xs font-semibold text-slate-700 mb-1.5">
                                             Excerpt
                                         </label>
 
@@ -321,7 +321,7 @@ function EditArticle() {
                                             value={formData.excerpt}
                                             onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
                                             placeholder="Write a 1–2 sentence summary of your article..."
-                                            className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"
+                                            className="w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"
                                         />
                                     </div>
 
@@ -329,19 +329,19 @@ function EditArticle() {
                             </section>
 
                             {/* Cover Image */}
-                            <section className="bg-white rounded-lg border border-slate-300 p-6">
-                                <h3 className="font-bold mb-4 flex items-center gap-2">
+                            <section className="bg-white rounded-md border border-slate-300 p-6">
+                                <h3 className="font-bold mb-4 flex items-center gap-2 text-sm">
                                     <Image size={18} />
                                     Cover Image
                                 </h3>
 
                                 {/* Tabs */}
-                                <div className="flex mb-4 bg-slate-100 rounded-lg p-1">
+                                <div className="flex mb-4 bg-slate-100 rounded-md p-1">
                                     <button
                                         onClick={() => setActiveTab("gallery")}
                                         className={`flex-1 py-2 text-sm font-semibold rounded-md transition ${activeTab === "gallery"
-                                            ? "bg-white shadow text-slate-900"
-                                            : "text-slate-500"
+                                            ? "bg-white shadow text-slate-900 text-xs"
+                                            : "text-slate-500 text-xs"
                                             }`}
                                     >
                                         Gallery
@@ -350,8 +350,8 @@ function EditArticle() {
                                     <button
                                         onClick={() => setActiveTab("upload")}
                                         className={`flex-1 py-2 text-sm font-semibold rounded-md transition ${activeTab === "upload"
-                                            ? "bg-white shadow text-slate-900"
-                                            : "text-slate-500"
+                                            ? "bg-white shadow text-slate-900 text-xs"
+                                            : "text-slate-500 text-xs"
                                             }`}
                                     >
                                         Upload
@@ -371,7 +371,7 @@ function EditArticle() {
                                                         setCoverImage(img)
                                                         setFormData({ ...formData, cover_image: img })
                                                     }}
-                                                    className={`relative cursor-pointer rounded-lg overflow-hidden aspect-video group border ${isSelected
+                                                    className={`relative cursor-pointer rounded-md overflow-hidden aspect-video group border ${isSelected
                                                         ? "border-emerald-600 ring-2 ring-emerald-500"
                                                         : "border-slate-200"
                                                         }`}
@@ -404,7 +404,7 @@ function EditArticle() {
                                 {activeTab === "upload" && (
                                     <div
                                         onClick={() => fileInputRef.current.click()}
-                                        className="border-2 border-dashed rounded-lg p-6 text-center cursor-pointer hover:border-emerald-400 transition"
+                                        className="border-2 border-dashed rounded-md p-6 text-center cursor-pointer hover:border-emerald-400 transition"
                                     >
                                         <input
                                             type="file"
@@ -413,7 +413,7 @@ function EditArticle() {
                                             onChange={handleImageUpload}
                                             className="hidden" />
                                         <Upload className="mx-auto mb-2 text-emerald-700" />
-                                        <p className="text-sm font-medium">
+                                        <p className="text-xs font-medium">
                                             Click to upload
                                         </p>
                                         <p className="text-xs text-slate-500">
@@ -430,7 +430,7 @@ function EditArticle() {
                                         </p>
                                         <img
                                             src={coverImage}
-                                            className="rounded-lg aspect-video object-cover"
+                                            className="rounded-md aspect-video object-cover"
                                         />
                                     </div>
                                 )}

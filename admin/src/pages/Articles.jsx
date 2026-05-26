@@ -174,7 +174,38 @@ function Articles() {
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
 
           {loading ? (
-            <p className="text-slate-500">Loading articles...</p>
+            Array.from({ length: 9 }).map((_, index) => (
+              <div
+                key={index}
+                className="flex flex-col bg-white rounded-lg overflow-hidden border border-slate-200 animate-pulse"
+              >
+                {/* Image Skeleton */}
+                <div className="aspect-video w-full bg-slate-200"></div>
+
+                {/* Content Skeleton */}
+                <div className="p-4 sm:p-6 flex flex-col flex-grow">
+
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="h-5 w-20 rounded-full bg-slate-200"></div>
+                    <div className="h-4 w-24 bg-slate-200 rounded"></div>
+                  </div>
+
+                  <div className="h-6 w-full bg-slate-200 rounded mb-2"></div>
+                  <div className="h-6 w-3/4 bg-slate-200 rounded mb-4"></div>
+
+                  <div className="space-y-2 mb-6">
+                    <div className="h-4 w-full bg-slate-200 rounded"></div>
+                    <div className="h-4 w-5/6 bg-slate-200 rounded"></div>
+                    <div className="h-4 w-2/3 bg-slate-200 rounded"></div>
+                  </div>
+
+                  <div className="mt-auto pt-4 border-t border-slate-100">
+                    <div className="h-4 w-28 bg-slate-200 rounded"></div>
+                  </div>
+
+                </div>
+              </div>
+            ))
           ) : articles.length === 0 ? (
             <div className="col-span-full flex flex-col items-center justify-center py-20 text-center">
 
@@ -207,13 +238,13 @@ function Articles() {
                 >
                   {/* Cover Image */}
                   <div className="aspect-video w-full bg-slate-200 relative overflow-hidden">
-                    <div
-                      className="absolute inset-0 bg-cover bg-center 
-                   transition-transform duration-500 ease-in-out 
-                   group-hover:scale-105"
-                      style={{
-                        backgroundImage: `url(${article.cover_image})`
-                      }}
+                    <img
+                      src={article.cover_image}
+                      alt={article.title}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
+                      loading="lazy"
+                      width={640}
+                      height={360}
                     />
                   </div>
 

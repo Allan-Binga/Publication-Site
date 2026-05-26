@@ -163,7 +163,7 @@ function NewArticle() {
                         {/* LEFT COLUMN */}
                         <div className="space-y-6 order-2 lg:order-1">
 
-                            <div className="bg-white rounded-lg border border-slate-300 overflow-hidden">
+                            <div className="bg-white rounded-md border border-slate-300 overflow-hidden">
 
                                 <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50">
 
@@ -210,7 +210,7 @@ function NewArticle() {
                         {/* RIGHT SIDEBAR */}
                         <div className="space-y-6 order-1 lg:order-2">
                             {/* Article Details */}
-                            <section className="bg-white rounded-lg border border-slate-300 p-6">
+                            <section className="bg-white rounded-md border border-slate-300 p-6">
                                 <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2 text-sm">
                                     <Settings className="text-emerald-800" size={18} />
                                     Article Details
@@ -234,7 +234,7 @@ function NewArticle() {
                                                 }))
                                             }}
                                             placeholder="e.g. Scaling Vector Databases"
-                                            className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition placeholder:text-xs"
+                                            className="w-full rounded-md text-xs border border-slate-200 bg-slate-50 px-4 py-3 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition placeholder:text-xs"
                                         />
                                     </div>
 
@@ -247,7 +247,7 @@ function NewArticle() {
                                         <input
                                             readOnly
                                             value={slug}
-                                            className="w-full rounded-lg border border-slate-200 bg-slate-200 text-slate-500 px-4 py-3 text-sm cursor-not-allowed focus:ring-2 focus:ring-primary focus:border-primary outline-none transition placeholder:text-sm"
+                                            className="w-full rounded-md border border-slate-200 bg-slate-200 text-slate-500 px-4 py-3 text-xs cursor-not-allowed focus:ring-2 focus:ring-primary focus:border-primary outline-none transition placeholder:text-sm"
                                         />
                                     </div>
 
@@ -260,7 +260,7 @@ function NewArticle() {
                                         <select
                                             value={formData.category}
                                             onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                                            className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition text-xs"
+                                            className="w-full rounded-md border border-slate-200 bg-slate-50 px-4 py-3 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition text-xs"
                                         >
                                             <option>Artificial Intelligence</option>
                                             <option>Data Engineering</option>
@@ -294,7 +294,7 @@ function NewArticle() {
                                             value={formData.excerpt}
                                             onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
                                             placeholder="Write a 1–2 sentence summary of your article..."
-                                            className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition placeholder:text-xs"
+                                            className="w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:ring-2 focus:ring-primary focus:border-primary outline-none transition placeholder:text-xs"
                                         />
                                     </div>
 
@@ -302,14 +302,14 @@ function NewArticle() {
                             </section>
 
                             {/* Cover Image */}
-                            <section className="bg-white rounded-lg border border-slate-300 p-6">
+                            <section className="bg-white rounded-md border border-slate-300 p-6">
                                 <h3 className="font-bold mb-4 flex items-center gap-2 text-sm">
                                     <Image size={18} />
                                     Cover Image
                                 </h3>
 
                                 {/* Tabs */}
-                                <div className="flex mb-4 bg-slate-100 rounded-lg p-1">
+                                <div className="flex mb-4 bg-slate-100 rounded-md p-1">
                                     <button
                                         onClick={() => setActiveTab("gallery")}
                                         className={`flex-1 py-2 text-sm font-semibold rounded-md transition ${activeTab === "gallery"
@@ -344,7 +344,7 @@ function NewArticle() {
                                                         setCoverImage(img)
                                                         setFormData({ ...formData, cover_image: img })
                                                     }}
-                                                    className={`relative cursor-pointer rounded-lg overflow-hidden aspect-video group border ${isSelected
+                                                    className={`relative cursor-pointer rounded-md overflow-hidden aspect-video group border ${isSelected
                                                         ? "border-emerald-600 ring-2 ring-emerald-500"
                                                         : "border-slate-200"
                                                         }`}
@@ -377,7 +377,7 @@ function NewArticle() {
                                 {activeTab === "upload" && (
                                     <div
                                         onClick={() => fileInputRef.current.click()}
-                                        className="border-2 border-dashed rounded-lg p-6 text-center cursor-pointer hover:border-emerald-400 transition"
+                                        className="border-2 border-dashed rounded-md p-6 text-center cursor-pointer hover:border-emerald-400 transition"
                                     >
                                         <input
                                             type="file"
@@ -403,7 +403,7 @@ function NewArticle() {
                                         </p>
                                         <img
                                             src={coverImage}
-                                            className="rounded-lg aspect-video object-cover"
+                                            className="rounded-md aspect-video object-cover"
                                         />
                                     </div>
                                 )}
