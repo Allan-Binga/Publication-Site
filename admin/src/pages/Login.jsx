@@ -1,4 +1,4 @@
-import Navbar from "../components/Navbar"
+import LoginNav from "../components/LoginNav"
 import Footer from "../components/Footer"
 import Spinner from "../components/Spinner"
 import { Eye, EyeOff } from "lucide-react"
@@ -78,7 +78,7 @@ function Login() {
 
     return (
         <div className="min-h-screen flex flex-col">
-            <Navbar />
+            <LoginNav />
             <main className="flex-grow flex items-center justify-center p-4">
                 <div className="w-full max-w-md bg-white  rounded-lg border border-slate-300  overflow-hidden">
                     <div className="p-8 flex flex-col gap-6">
