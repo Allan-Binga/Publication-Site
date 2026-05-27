@@ -1,5 +1,4 @@
 const express = require("express")
-const dotenv = require("dotenv")
 const cors = require("cors")
 const cookieParser = require("cookie-parser");
 const authRoute = require("./routes/auth");
@@ -9,7 +8,6 @@ const profileRoute = require("./routes/profile")
 //Import PG
 require("./config/db")
 
-dotenv.config();
 const app = express()
 
 app.use(express.json())
