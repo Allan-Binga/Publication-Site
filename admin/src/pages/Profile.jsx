@@ -17,6 +17,7 @@ import {
 import axios from "axios"
 import { useState, useEffect } from "react"
 import { endpoint } from "../api"
+import { useToast } from "../components/ToastContext"
 
 function Profile() {
     const [profile, setProfile] = useState(null)
@@ -32,6 +33,7 @@ function Profile() {
     })
     const [profilePhoto, setProfilePhoto] = useState(null)
     const [uploadedFile, setUploadedFile] = useState(null)
+    const { showToast, updateToast } = useToast();
 
     //Profile useEffect
     useEffect(() => {
@@ -106,6 +108,12 @@ function Profile() {
         try {
             const payload = new FormData()
 
+            const toastId = showToast({
+                type: "loading",
+                title: "Saving Profile",
+                message: "Saving..."
+            });
+
             payload.append("username", formData.username)
             payload.append("displayName", formData.displayName)
             payload.append("bio", formData.bio)
@@ -128,11 +136,19 @@ function Profile() {
 
             setIsEditing(false)
 
-            alert("Profile updated successfully.")
+            updateToast(toastId, {
+                type: "success",
+                title: "Profile Update",
+                message: "Profile saved"
+            });
 
         } catch (error) {
             console.log(error)
-            alert("Failed to update profile.")
+            updateToast(toastId, {
+                type: "error",
+                title: "Failed to save profile. Please try again later.",
+                message: error.message
+            });
         }
     }
 

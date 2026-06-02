@@ -3,11 +3,13 @@ import { LayoutDashboard, BookOpen, PenSquare, LogOut } from "lucide-react"
 import { endpoint } from "../api"
 import api from "../interceptor"
 import { Link, useNavigate } from "react-router-dom"
+import { useToast } from "./ToastContext"
 
 function Navbar() {
     const navigate = useNavigate()
     const [canPublish, setCanPublish] = useState(true)
     const [open, setOpen] = useState(false)
+    const { showToast, updateToast } = useToast();
 
     useEffect(() => {
         const fetchProfileStatus = async () => {
@@ -32,16 +34,31 @@ function Navbar() {
                 { withCredentials: true }
             )
 
+            const toastId = showToast({
+                type: "loading",
+                title: "Logging out",
+                message: "You have logged out."
+            });
+
             if (response.status === 200) {
                 document.cookie = "userSession=; Max-Age=0; path=/;"
-                alert("You have logged out.")
+                // Toast Component
+                updateToast(toastId, {
+                    type: "success",
+                    title: "Logged out.",
+                    message: ""
+                });
                 navigate("/login")
             } else {
                 alert("You are not logged in.")
             }
         } catch (error) {
             console.error("Logout error:", error)
-            alert("You are not logged in.")
+            updateToast(toastId, {
+                type: "error",
+                title: "Failed to logout.",
+                message: error.message
+            });
         }
     }
 
@@ -156,8 +173,8 @@ function Navbar() {
             {/* MOBILE MENU */}
             <div
                 className={`md:hidden absolute top-20 left-0 w-full bg-white border-b border-slate-100 shadow-lg transition-all duration-300 ease-in-out ${open
-                        ? "opacity-100 translate-y-0 pointer-events-auto"
-                        : "opacity-0 -translate-y-4 pointer-events-none"
+                    ? "opacity-100 translate-y-0 pointer-events-auto"
+                    : "opacity-0 -translate-y-4 pointer-events-none"
                     }`}
             >
                 <div className="flex flex-col px-6 py-4 gap-4 text-sm text-slate-700">

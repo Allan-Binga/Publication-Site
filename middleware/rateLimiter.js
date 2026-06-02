@@ -4,7 +4,7 @@ const authLimiter = rateLimit({
     windowMs: 10 * 60 * 1000,
     max: 5,
     message: {
-        message: "Too many authentication attempts."
+        message: "Too many authentication attempts. Please try again later."
     }
 });
 

@@ -14,19 +14,25 @@ app.use(express.json())
 
 //Cors
 const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5174",
   "https://skirill.org",
   "https://www.skirill.org",
-  "https://admin.skirill.org",
-  "http://localhost:5173",
-  "http://localhost:5174"
+  "https://admin.skirill.org"
+
 ];
 
 
 const corsOptions = {
   origin: function (origin, callback) {
+    // console.log("Incoming Origin:", origin);
+    // console.log("Method:", this?.req?.method);
+    // console.log("URL:", this?.req?.url);
+
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
+      console.log("Rejected Origin:", origin);
       callback(new Error("Not allowed by CORS!"));
     }
   },

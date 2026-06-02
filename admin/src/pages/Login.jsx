@@ -5,6 +5,7 @@ import { Eye, EyeOff } from "lucide-react"
 import { useState } from "react"
 import { endpoint } from "../api"
 import { Link, useNavigate } from "react-router-dom"
+import { useToast } from "../components/ToastContext"
 
 
 function Login() {
@@ -13,6 +14,7 @@ function Login() {
     const [fieldErrors, setFieldErrors] = useState({});
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate()
+    const { showToast, updateToast } = useToast();
 
     // Validate Input Fields
     const validateField = (name, value) => {
@@ -42,20 +44,32 @@ function Login() {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault()
-        const errors = validateForm()
+        e.preventDefault();
+
+        const errors = validateForm();
+
         if (Object.keys(errors).length > 0) {
             setFieldErrors(errors);
             return;
         }
-        setLoading(true)
+
+        setLoading(true);
+
+        const toastId = showToast({
+            type: "loading",
+            title: "Signing In",
+            message: "Verifying credentials..."
+        });
+
         try {
             const response = await fetch(`${endpoint}/auth/admin/login`, {
                 method: "POST",
                 credentials: "include",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                },
                 body: JSON.stringify(formData),
-            })
+            });
 
             const data = await response.json();
 
@@ -63,18 +77,26 @@ function Login() {
                 throw new Error(data.message || "Login failed");
             }
 
-            // Wait for 2 seconds before navigating
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-            alert("Login successful.")
-            navigate("/home")
+            updateToast(toastId, {
+                type: "success",
+                title: "Login Successful",
+                message: "Redirecting to dashboard..."
+            });
+
+            setTimeout(() => {
+                navigate("/home");
+            }, 1000);
+
         } catch (error) {
-            // Wait for 2 seconds before showing error
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-            alert(error.message || "Account creation failed.");
+            updateToast(toastId, {
+                type: "error",
+                title: "Sign In Failed",
+                message: error.message
+            });
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
-    }
+    };
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -126,7 +148,7 @@ function Login() {
                                         className="text-primary text-xs font-semibold hover:underline"
                                         to="/password/reset"
                                     >
-                                        Forgot password?
+                                        Trouble logging in?
                                     </Link>
 
                                 </div>

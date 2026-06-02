@@ -14,26 +14,30 @@ import Profile from "./pages/Profile";
 import ResetPassword from "./pages/PasswordReset";
 import ChangePassword from "./pages/ChangePassword"
 import About from "./pages/About";
+import ToastContainer from "./components/ToastContainer";
 
 function App() {
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/password/reset" element={<ResetPassword />} />
-        <Route path="/password/change" element={<ChangePassword />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/articles" element={<Articles />} />
-        <Route path="/articles/new" element={<NewArticle />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/articles/article/:id" element={<Article />} />
-        <Route path="/articles/article/edit/:id" element={<EditArticle />} />
-      </Routes>
-    </Router>
+    <>
+      <ToastContainer />
+      <Router>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/password/reset" element={<ResetPassword />} />
+          <Route path="/password/change" element={<ChangePassword />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/articles" element={<Articles />} />
+          <Route path="/articles/new" element={<NewArticle />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/articles/article/:id" element={<Article />} />
+          <Route path="/articles/article/edit/:id" element={<EditArticle />} />
+        </Routes>
+      </Router>
+    </>
   )
 }
 

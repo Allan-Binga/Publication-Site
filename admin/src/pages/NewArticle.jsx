@@ -1,20 +1,13 @@
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
 import Spinner from "../components/Spinner"
-import {
-    Save,
-    Send,
-    FileText,
-    Settings,
-    Image,
-    Upload,
-    Eye, Check
-} from "lucide-react"
+import { Save, Send, FileText, Settings, Image, Upload, Eye, Check, ChevronDown} from "lucide-react"
 import { useState, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import { endpoint } from "../api"
 import api from "../interceptor"
 import { Editor } from '@tinymce/tinymce-react'
+import { useToast } from "../components/ToastContext"
 
 function NewArticle() {
     const [title, setTitle] = useState("")
@@ -29,11 +22,13 @@ function NewArticle() {
         status: "",
         cover_image: ""
     })
+    const [formErrors, setFormErrors] = useState({})
     const [loading, setLoading] = useState(false)
     const [uploadedFile, setUploadedFile] = useState(null)
     const navigate = useNavigate()
     const editorRef = useRef(null)
     const fileInputRef = useRef(null)
+    const { showToast, updateToast } = useToast();
 
     //S3 Images
     const galleryImages = [
@@ -62,10 +57,69 @@ function NewArticle() {
         setSlug(generateSlug(value))
     }
 
+    //Form Validation
+    const validateForm = () => {
+        const errors = {}
+
+        if (!formData.title.trim()) errors.title = "Title is required"
+        if (!formData.excerpt.trim()) errors.excerpt = "Excerpt is required"
+        if (!formData.category.trim()) errors.category = "Category is required"
+
+        const contentText = editorRef.current?.getContent({ format: "text" }) || ""
+        if (!contentText.trim()) errors.content = "Content is required"
+
+        if (!uploadedFile && !formData.cover_image) {
+            errors.cover_image = "Cover image is required"
+        }
+
+        setFormErrors(errors)
+
+        return errors
+    }
+
+    //Clear Fields
+    const clearFieldError = (field) => {
+        if (formErrors[field]) {
+            setFormErrors((prev) => {
+                const updated = { ...prev }
+                delete updated[field]
+                return updated
+            })
+        }
+    }
+
     //Publish Article
     const handleSubmit = async (statusType) => {
+        const errors = validateForm()
+
+        if (Object.keys(errors).length > 0) {
+            const firstErrorKey = Object.keys(errors)[0]
+
+            showToast({
+                type: "error",
+                title: "Form validation failed",
+                message: errors[firstErrorKey]
+            })
+
+            // focus handling
+            if (firstErrorKey === "title") titleRef.current?.focus()
+            if (firstErrorKey === "excerpt") excerptRef.current?.focus()
+            if (firstErrorKey === "category") categoryRef.current?.focus()
+
+
+            return
+        }
+
+        let toastId;
+
         try {
             setLoading(true)
+
+            const toastId = showToast({
+                type: "loading",
+                title: "Saving Article",
+                message: "Publishing..."
+            });
 
             const payload = new FormData()
 
@@ -81,16 +135,24 @@ function NewArticle() {
                 payload.append("cover_image", formData.cover_image)
             }
 
-            const res = await api.post(
+            await api.post(
                 `${endpoint}/article/admin/post`,
                 payload,
                 { withCredentials: true }
             )
-            alert("Article published.")
+            updateToast(toastId, {
+                type: "success",
+                title: "Article Published",
+                message: "Redirecting..."
+            });
             navigate("/articles")
 
         } catch (err) {
-            alert("Failed to save article.")
+            updateToast(toastId, {
+                type: "error",
+                title: "Failed to save article. Please try again.",
+                message: error.message
+            });
             console.error(err)
             console.log(err)
         } finally {
@@ -112,8 +174,9 @@ function NewArticle() {
 
         setCoverImage(imageUrl)
     }
-    // console.log(formData.content)
 
+    const hasError = (field) => formErrors[field]
+    // console.log(formData.content)
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -129,7 +192,7 @@ function NewArticle() {
                                 Create New Article
                             </h1>
                             <p className="text-slate-600 text-sm">
-                                Draft your latest technical insights on AI and Data Engineering.
+                                Compose your article in the prefered manner for your viewers.
                             </p>
                         </div>
 
@@ -139,7 +202,7 @@ function NewArticle() {
                             <button
                                 onClick={() => handleSubmit("draft")}
                                 disabled={loading}
-                                className="w-40 flex items-center justify-center cursor-pointer gap-2 px-4 py-2 border border-emerald-800 text-emerald-800 text-sm font-semibold rounded-sm hover:bg-emerald-50 transition disabled:opacity-60 disabled:cursor-not-allowed"
+                                className="w-40 flex items-center justify-center cursor-pointer gap-2 px-4 py-2 border border-emerald-800 text-emerald-800 text-xs font-semibold rounded-sm hover:bg-emerald-50 transition disabled:opacity-60 disabled:cursor-not-allowed"
                             >
                                 {loading ? <Spinner /> : <Save size={18} />}
                                 {loading ? "Saving..." : "Save Draft"}
@@ -149,7 +212,7 @@ function NewArticle() {
                             <button
                                 onClick={() => handleSubmit("published")}
                                 disabled={loading}
-                                className="w-40 flex items-center justify-center cursor-pointer gap-2 px-4 py-2 bg-emerald-800 text-white text-sm font-semibold rounded-sm hover:bg-emerald-900 transition disabled:opacity-60 disabled:cursor-not-allowed"
+                                className="w-40 flex items-center justify-center cursor-pointer gap-2 px-4 py-2 bg-emerald-800 text-white text-xs font-semibold rounded-sm hover:bg-emerald-900 transition disabled:opacity-60 disabled:cursor-not-allowed"
                             >
                                 {loading ? <Spinner /> : <Send size={18} />}
                                 {loading ? "Publishing..." : "Publish"}
@@ -228,13 +291,22 @@ function NewArticle() {
                                             value={title}
                                             onChange={(e) => {
                                                 handleTitleChange(e)
+
                                                 setFormData((prev) => ({
                                                     ...prev,
                                                     title: e.target.value
                                                 }))
+
+                                                if (e.target.value.trim()) {
+                                                    clearFieldError("title")
+                                                }
                                             }}
                                             placeholder="e.g. Scaling Vector Databases"
-                                            className="w-full rounded-md text-xs border border-slate-200 bg-slate-50 px-4 py-3 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition placeholder:text-xs"
+                                            className={`w-full rounded-md text-xs border px-4 py-3 bg-slate-50 outline-none transition
+                                                ${hasError("title")
+                                                    ? "border-red-500 ring-2 ring-red-300"
+                                                    : "border-slate-200 focus:ring-2 focus:ring-primary"
+                                                }`}
                                         />
                                     </div>
 
@@ -259,7 +331,16 @@ function NewArticle() {
 
                                         <select
                                             value={formData.category}
-                                            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                                            onChange={(e) => {
+                                                setFormData({
+                                                    ...formData,
+                                                    category: e.target.value
+                                                })
+
+                                                if (e.target.value.trim()) {
+                                                    clearFieldError("category")
+                                                }
+                                            }}
                                             className="w-full rounded-md border border-slate-200 bg-slate-50 px-4 py-3 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition text-xs"
                                         >
                                             <option>Artificial Intelligence</option>
@@ -292,9 +373,22 @@ function NewArticle() {
                                         <textarea
                                             rows="3"
                                             value={formData.excerpt}
-                                            onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                                            onChange={(e) => {
+                                                setFormData({
+                                                    ...formData,
+                                                    excerpt: e.target.value
+                                                })
+
+                                                if (e.target.value.trim()) {
+                                                    clearFieldError("excerpt")
+                                                }
+                                            }}
                                             placeholder="Write a 1–2 sentence summary of your article..."
-                                            className="w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-xs focus:ring-2 focus:ring-primary focus:border-primary outline-none transition placeholder:text-xs"
+                                            className={`w-full rounded-md border px-3 py-2 text-xs bg-slate-50 outline-none transition
+                                                ${hasError("excerpt")
+                                                    ? "border-red-500 ring-2 ring-red-300"
+                                                    : "border-slate-200 focus:ring-2 focus:ring-primary"
+                                                }`}
                                         />
                                     </div>
 
