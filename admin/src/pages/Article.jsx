@@ -5,12 +5,15 @@ import { endpoint } from "../api";
 import api from "../interceptor"
 import { useNavigate, useParams, Link as RouterLink } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useToast } from "../components/ToastContext";
 
 function Article() {
     const { id } = useParams()
     const navigate = useNavigate()
     const [article, setArticle] = useState(null)
     const [relatedArticles, setRelatedArticles] = useState([])
+    const { showToast, updateToast } = useToast();
+    const [showModal, setShowModal] = useState(false);
 
     //Single Article useEffect
     useEffect(() => {
@@ -25,7 +28,7 @@ function Article() {
             } catch (error) {
                 console.log(error)
                 console.error("Error fetching article:", error);
-                alert("Error fetching article.")
+                // alert("Error fetching article.")
             }
         }
         fetchArticle()
@@ -40,22 +43,50 @@ function Article() {
         )
     }
 
-    //Delete Article Handler
+    // Delete Article Handler
     const handleDelete = async () => {
-        const confirmDelete = window.confirm("Delete this article permanently?");
-        if (!confirmDelete) return;
+        // Close modal immediately when action begins
+        setShowModal(false);
+
+        const toastId = showToast({
+            type: "loading",
+            title: "Deleting Article",
+            message: "Removing from database..."
+        });
 
         try {
             await api.delete(`${endpoint}/article/admin/delete/${id}`, {
                 withCredentials: true
             });
-            alert("Article deleted.")
-            navigate("/articles");
+
+            updateToast(toastId, {
+                type: "success",
+                title: "Article Deleted",
+                message: "Returning to dashboard..."
+            });
+
+            // Slight delay gives the user a chance to read the success toast before navigation jumps away
+            setTimeout(() => {
+                navigate("/articles");
+            }, 1500);
+
         } catch (error) {
-            // console.log(error)
-            alert("Failed to delete article");
+            // Fallback default message
+            let errorDetail = "Could not delete article. Please try again.";
+
+            // Grab API-specific error message if it exists (e.g., "Unauthorized" or "Article not found")
+            if (error.response && error.response.data && error.response.data.message) {
+                errorDetail = error.response.data.message;
+            }
+
+            updateToast(toastId, {
+                type: "error",
+                title: "Deletion Failed",
+                message: errorDetail
+            });
         }
     };
+
 
     return (
         <div className="min-h-screen flex flex-col bg-background-light text-slate-900 font-display">
@@ -97,7 +128,7 @@ function Article() {
                             </button>
 
                             <button
-                                onClick={handleDelete}
+                                onClick={() => setShowModal(true)}
                                 className="flex items-center gap-2 px-4 py-2 rounded-sm bg-red-600 text-white text-xs font-bold hover:bg-red-700 transition cursor-pointer"
                             >
                                 <Trash2 className="w-4 h-4" />
@@ -228,7 +259,7 @@ function Article() {
                                 Related Articles
                             </h2>
 
-                            <RouterLink 
+                            <RouterLink
                                 to={"/articles"}
                                 className="text-emerald-800 font-semibold flex items-center gap-1 hover:underline text-xs">
 
@@ -280,6 +311,45 @@ function Article() {
                     </section>
                 )}
             </main>
+
+            {/* Modal Popup */}
+            {showModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center">
+                    {/* Dark Backdrop Overlay */}
+                    <div
+                        className="absolute inset-0 bg-slate-900/40 backdrop-blur-xs transition-opacity"
+                        onClick={() => setShowModal(false)}
+                    />
+
+                    {/* Modal Content Window */}
+                    <div className="relative bg-white rounded-lg shadow-xl p-6 max-w-sm w-full mx-4 border border-slate-100 transform transition-all text-center">
+                        <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
+                            <Trash2 className="w-6 h-6 text-red-600" />
+                        </div>
+
+                        <h3 className="text-lg font-bold text-slate-900 mb-2">
+                            Delete Article?
+                        </h3>
+                        <p className="text-sm text-slate-500 mb-6 leading-relaxed">
+                            This action cannot be undone. This article will be permanently removed from your dashboard.
+                        </p>
+                        <div className="flex items-center gap-3">
+                            <button
+                                onClick={() => setShowModal(false)}
+                                className="flex-1 px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-sm transition cursor-pointer"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleDelete}
+                                className="flex-1 px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-sm transition cursor-pointer shadow-xs"
+                            >
+                                Yes, Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
             <Footer />
         </div>
     )

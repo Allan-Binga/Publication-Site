@@ -15,7 +15,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import { endpoint } from "../api"
 import api from "../interceptor"
 import { Editor } from '@tinymce/tinymce-react'
-
+import { useToast } from "../components/ToastContext"
 
 function EditArticle() {
     const { id } = useParams()
@@ -36,6 +36,7 @@ function EditArticle() {
     const navigate = useNavigate()
     const editorRef = useRef(null)
     const fileInputRef = useRef(null)
+    const { showToast, updateToast } = useToast();
 
     //Fetched Article useEffect
     useEffect(() => {
@@ -107,6 +108,12 @@ function EditArticle() {
         try {
             isLoading(true)
 
+            const toastId = showToast({
+                type: "loading",
+                title: "Saving",
+                message: "Updating..."
+            });
+
             const payload = new FormData()
 
             payload.append("title", formData.title)
@@ -126,7 +133,11 @@ function EditArticle() {
                 payload,
                 { withCredentials: true }
             )
-            alert("Article saved successfully.")
+            updateToast(toastId, {
+                type: "success",
+                title: "Successful.",
+                message: "Aricle updated..."
+            });
             navigate(`/articles/article/${id}`)
 
         } catch (err) {

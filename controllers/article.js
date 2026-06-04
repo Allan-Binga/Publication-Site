@@ -1,4 +1,5 @@
 const pool = require("../config/db")
+const cache = require("../config/cache")
 
 //Create Slug
 const generateSlug = (title) => {
@@ -199,6 +200,96 @@ const postArticle = async (req, res) => {
 
 // Get Articles
 const getArticles = async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 9;
+        const offset = (page - 1) * limit;
+
+        const search = req.query.search || "";
+        const category = req.query.category || "";
+
+        let filters = [`status = 'published'`];
+        let values = [];
+
+        let paramIndex = 1;
+
+        // Search filter
+        if (search) {
+            filters.push(`
+                (
+                    title ILIKE $${paramIndex}
+                    OR excerpt ILIKE $${paramIndex}
+                    OR category ILIKE $${paramIndex}
+                )
+            `);
+
+            values.push(`%${search}%`);
+            paramIndex++;
+        }
+
+        // Category filter
+        if (category) {
+            filters.push(`category = $${paramIndex}`);
+
+            values.push(category);
+            paramIndex++;
+        }
+
+        const whereClause = `WHERE ${filters.join(" AND ")}`;
+
+        // Count query
+        const countQuery = `
+            SELECT COUNT(*)
+            FROM articles
+            ${whereClause}
+        `;
+
+        // Articles query
+        const articlesQuery = `
+            SELECT
+                id,
+                title,
+                slug,
+                excerpt,
+                cover_image,
+                category,
+                created_at
+            FROM articles
+            ${whereClause}
+            ORDER BY created_at DESC
+            LIMIT $${paramIndex}
+            OFFSET $${paramIndex + 1}
+        `;
+
+        values.push(limit, offset);
+
+        const [countResult, articlesResult] = await Promise.all([
+            pool.query(countQuery, values.slice(0, paramIndex - 1)),
+            pool.query(articlesQuery, values)
+        ]);
+
+        const totalArticles = Number(countResult.rows[0].count);
+
+        const totalPages = Math.ceil(totalArticles / limit);
+
+        return res.status(200).json({
+            currentPage: page,
+            totalPages,
+            totalArticles,
+            articles: articlesResult.rows
+        });
+
+    } catch (error) {
+        console.error("Get Articles Error:", error);
+
+        return res.status(500).json({
+            message: "Internal server error."
+        });
+    }
+};
+
+// Get Cached Articles
+const getCatchedArticles = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 9;
@@ -611,6 +702,7 @@ module.exports = {
     publicDashboard,
     postArticle,
     getArticles,
+    getCatchedArticles,
     article,
     getArticle,
     userArticles,

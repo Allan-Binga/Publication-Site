@@ -4,21 +4,48 @@ import Spinner from "../components/Spinner"
 import api from "../interceptor"
 import { endpoint } from "../api"
 import { useState } from "react"
+import { useToast } from "../components/ToastContext"
+import { Link } from "react-router-dom"
 
 function ResetPassword() {
     const [email, setEmail] = useState("");
     const [loading, setLoading] = useState(false);
+    const { showToast, updateToast } = useToast();
 
     //Reset password API call
     const resetPassword = async () => {
         setLoading(true)
+        const toastId = showToast({
+            type: "loading",
+            title: "Please wait",
+            message: "Sending link..."
+        });
         try {
             const response = await api.post(`${endpoint}/auth/password/reset`, {
                 email
             })
-            alert("Email sent")
+            updateToast(toastId, {
+                type: "success",
+                title: "Link sent.",
+                message: "Check your inbox for reset instructions"
+            });
         } catch (error) {
-            alert(error.message)
+
+            // Fallback defaults if the server response is missing
+            let errorTitle = "Error";
+            let errorDetail = "Something went wrong. Please try again.";
+
+            // If your API returns the structured express-rate-limit JSON payload
+            if (error.response && error.response.data) {
+                errorTitle = error.response.data.title || "Request Failed";
+                errorDetail = error.response.data.message || errorDetail;
+            }
+
+            updateToast(toastId, {
+                type: "error",
+                title: errorTitle,
+                message: errorDetail
+            });
         } finally {
             setLoading(false)
         }
@@ -82,6 +109,12 @@ function ResetPassword() {
                                     <span>Reset password</span>
                                 )}
                             </button>
+                            <Link
+                                to="/login"
+                                className="flex w-full h-12 items-center justify-center border border-slate-300 text-slate-700 text-sm font-semibold rounded-md hover:bg-slate-50 transition"
+                            >
+                                Back to Login
+                            </Link>
                         </form>
                     </div>
                 </div>

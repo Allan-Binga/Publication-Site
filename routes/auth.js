@@ -1,6 +1,6 @@
 const express = require("express")
 const {signUp, login, logout, refresh} = require("../controllers/auth")
-const {authLimiter} = require("../middleware/rateLimiter")
+const {authLimiter, passwordResetLimiter} = require("../middleware/rateLimiter")
 const { resetPasswordEmail, verifyPasswordResetToken, resetPasswordToken } = require("../controllers/password")
 
 
@@ -13,7 +13,7 @@ router.post("/admin/refresh", refresh)
 router.post("/admin/logout", logout)
 
 //Password Reset Routes
-router.post("/password/reset", resetPasswordEmail)
+router.post("/password/reset", passwordResetLimiter, resetPasswordEmail)
 router.get("/verify/password/token", verifyPasswordResetToken)
 router.put("/password/reset/token", resetPasswordToken)
 

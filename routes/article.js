@@ -1,5 +1,5 @@
 const express = require("express")
-const { postArticle, getArticles, editArticle, deleteArticle, userArticles, article, dashboard, getArticle, publicDashboard } = require("../controllers/article")
+const { postArticle, getArticles, getCatchedArticles, editArticle, deleteArticle, userArticles, article, dashboard, getArticle, publicDashboard } = require("../controllers/article")
 const { authUser } = require("../middleware/jwt")
 const {uploadArticlePhoto} = require("../middleware/upload")
 
@@ -8,6 +8,7 @@ const router = express.Router()
 //Routes
 router.post("/admin/post",authUser, uploadArticlePhoto.single("cover_image"), postArticle)
 router.get("/articles",  getArticles)
+router.get("/cached/articles", getCatchedArticles)
 router.get("/public/article/:articleId", getArticle)
 router.get("/admin/dashboard", authUser, dashboard)
 router.get("/dashboard", publicDashboard)

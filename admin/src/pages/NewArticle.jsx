@@ -344,6 +344,7 @@ function NewArticle() {
                                             className="w-full rounded-md border border-slate-200 bg-slate-50 px-4 py-3 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition text-xs"
                                         >
                                             <option>Artificial Intelligence</option>
+                                            <option>API</option>
                                             <option>Data Engineering</option>
                                             <option>Machine Learning Systems</option>
                                             <option>MLOps</option>
