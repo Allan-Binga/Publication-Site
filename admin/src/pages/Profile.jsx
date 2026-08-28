@@ -4,10 +4,7 @@ import api from "../interceptor"
 import {
     X,
     Save,
-    User,
     Camera,
-    Twitter,
-    Linkedin,
     Globe,
     Share2,
     BookOpen,
