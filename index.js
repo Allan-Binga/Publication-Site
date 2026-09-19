@@ -4,6 +4,7 @@ const cookieParser = require("cookie-parser");
 const authRoute = require("./routes/auth");
 const articleRoute = require("./routes/article")
 const profileRoute = require("./routes/profile")
+const metricsRoute = require("./routes/metrics")
 
 //Import PG
 require("./config/db")
@@ -25,10 +26,6 @@ const allowedOrigins = [
 
 const corsOptions = {
   origin: function (origin, callback) {
-    // console.log("Incoming Origin:", origin);
-    // console.log("Method:", this?.req?.method);
-    // console.log("URL:", this?.req?.url);
-
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -39,6 +36,18 @@ const corsOptions = {
   credentials: true,
 };
 
+app.use((req, res, next) => {
+  console.log({
+    method: req.method,
+    url: req.originalUrl,
+    origin: req.get("Origin"),
+    referer: req.get("Referer"),
+    userAgent: req.get("User-Agent"),
+    remoteAddress: req.socket.remoteAddress,
+  });
+  next();
+});
+
 app.use(cors(corsOptions));
 
 //Cookie Parser
@@ -48,6 +57,7 @@ app.use(cookieParser());
 app.use("/publication-site/v1/auth", authRoute);
 app.use("/publication-site/v1/article", articleRoute)
 app.use("/publication-site/v1/profile", profileRoute)
+app.use("/publication-site/v1/metrics", metricsRoute)
 
 // Start the server
 if (process.env.NODE_ENV !== "test") {
