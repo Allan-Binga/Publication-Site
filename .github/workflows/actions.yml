@@ -1,28 +1,30 @@
-name: Publication backend checks
+name: Backend CI
 
 on:
   push:
     branches: [master]
   pull_request:
     branches: [master]
-  workflow_dispatch:
-
-permissions:
-  contents: read
 
 jobs:
-  backend:
-    name: Backend tests
+  test:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          cache: npm
-      - run: npm ci --legacy-peer-deps
-      - run: npm test
 
-# Render's "After CI Checks Pass" setting handles deployment from master.
-# Frontend hosting is managed independently in Vercel.
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test -- --runInBand
+        # env:
+        #   NODE_ENV: test
+        #   JWT_SECRET: test-secret
