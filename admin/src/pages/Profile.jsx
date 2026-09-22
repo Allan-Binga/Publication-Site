@@ -9,7 +9,9 @@ import {
     Share2,
     BookOpen,
     Fingerprint,
-    Pencil
+    Pencil,
+    PoundSterlingIcon,
+    List
 } from "lucide-react"
 import axios from "axios"
 import { useState, useEffect } from "react"
@@ -471,7 +473,7 @@ function Profile() {
                                     <div className="flex items-center gap-4">
 
                                         <div className="w-10 h-10 rounded-sm bg-slate-50 flex items-center justify-center border border-slate-200 text-gray-500">
-                                            <Twitter size={18} className="text-sky-500" />
+                                            <Globe size={18} className="text-sky-500" />
                                         </div>
 
                                         {isEditing ? (
@@ -484,6 +486,7 @@ function Profile() {
                                                         twitter: e.target.value
                                                     })
                                                 }
+                                                placeholder="twitter"
                                                 className="w-full border border-slate-200 rounded-sm px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-emerald-700"
                                             />
                                         ) : (
@@ -497,7 +500,7 @@ function Profile() {
                                     <div className="flex items-center gap-4">
 
                                         <div className="w-10 h-10 rounded-sm bg-slate-50 flex items-center justify-center border border-slate-200 text-gray-500">
-                                            <Linkedin size={18} className="text-blue-600" />
+                                            <Globe size={18} className="text-blue-600" />
                                         </div>
 
                                         {isEditing ? (
