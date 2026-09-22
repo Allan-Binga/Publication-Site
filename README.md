@@ -209,32 +209,9 @@ See [routes/](routes/) for exact methods and paths. The frontends send credentia
 
 ## Production deployment
 
-`npm start` sets `NODE_ENV=production`. In this mode, [config/db.js](config/db.js) reads `DATABASE_URL` instead of the development `DB_*` variables:
+The backend is prepared for **Render + Neon PostgreSQL**, using `api.skirill.org`. See [DEPLOYMENT.md](DEPLOYMENT.md) for database initialization, Render environment variables, the Blueprint, custom-domain setup, and verification.
 
-```dotenv
-NODE_ENV=production
-DATABASE_URL=postgresql://APP_USER:URL_ENCODED_PASSWORD@DB_HOST:5432/publication_db
-CLIENT_URL=https://your-author-dashboard.example
-```
-
-Provide the remaining backend environment variables from local setup as well. The production database connection currently enables SSL with certificate verification disabled (`rejectUnauthorized: false`); adjust this configuration to your database provider's certificate requirements.
-
-Set each frontend's `VITE_BACKEND_ENDPOINT` to the public API URL before building. Serve the two `dist` directories with a web server configured to fall back to `index.html` for frontend routes, and proxy API requests to Express. Express does not serve the frontend builds. Use HTTPS for production authentication cookies and update the CORS allowlist for your frontend domains.
-
-The existing [GitHub Actions workflow](.github/workflows/actions.yml) runs on pushes to `master`. It installs backend dependencies, runs unit tests, connects to a VPS over SSH, pulls the code, installs dependencies, builds both frontends, and reloads or starts the PM2 application named `Skirill`.
-
-It requires these repository secrets:
-
-| Secret | Value |
-| --- | --- |
-| `SSH_KEY` | Private key used to access the VPS |
-| `SSH_USER` | VPS login user |
-| `SSH_HOST` | VPS hostname or IP address |
-| `PROJECT_PATH` | Absolute path to the repository checkout on the VPS |
-
-The VPS must already have the checkout, Git access, NVM with Node.js 24, PM2, backend environment configuration, frontend build environment configuration, and an initialized database. Ensure the PM2 process receives `NODE_ENV=production`; the workflow starts `index.js` directly rather than invoking `npm start`.
-
-Database initialization and upgrades are currently separate operational steps. The deployment workflow does not run `schema.sql` or migrations.
+The GitHub workflow runs backend checks; Render deploys `master` after CI passes. The former SSH/PM2 deployment to the VPS is removed. Public and admin frontends are managed separately on Vercel and are outside this backend deployment.
 
 ## Troubleshooting
 

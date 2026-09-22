@@ -11,12 +11,17 @@ require("./config/db")
 
 const app = express()
 
+// Render terminates HTTPS at its reverse proxy. Trust that single hop so
+// authentication rate limits use the forwarded client address.
+if (process.env.RENDER === "true") app.set("trust proxy", 1);
+
 app.use(express.json())
 
 //Cors
 const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:5174",
+  ...(process.env.NODE_ENV !== "production"
+    ? ["http://localhost:5173", "http://localhost:5174"]
+    : []),
   "https://skirill.org",
   "https://www.skirill.org",
   "https://admin.skirill.org"
@@ -53,6 +58,9 @@ app.use(cors(corsOptions));
 //Cookie Parser
 app.use(cookieParser());
 
+// Liveness only: does not continuously wake the scale-to-zero database.
+app.get("/health", (req, res) => res.status(200).json({ status: "ok" }));
+
 //Routes
 app.use("/publication-site/v1/auth", authRoute);
 app.use("/publication-site/v1/article", articleRoute)
@@ -62,7 +70,9 @@ app.use("/publication-site/v1/metrics", metricsRoute)
 // Start the server
 if (process.env.NODE_ENV !== "test") {
   const PORT = process.env.PORT || 3000;
-  app.listen(PORT, () => {
+  app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server started on port ${PORT}`);
   });
 }
+
+module.exports = app;

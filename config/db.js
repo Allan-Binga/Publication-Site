@@ -1,28 +1,35 @@
 const { Pool } = require("pg");
-const dotenv = require("dotenv");
+require("dotenv").config();
 
-dotenv.config();
-
-let pool;
-
-if (process.env.NODE_ENV === "production") {
-  pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false },
-  });
-} else {
-  pool = new Pool({
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
-  });
+const production = process.env.NODE_ENV === "production";
+if (production && !process.env.DATABASE_URL) {
+  throw new Error("DATABASE_URL is required in production");
 }
 
-pool
-  .connect()
-  .then(() => console.log("Connected to PostgreSQL database"))
-  .catch((err) => console.error("Connection error", err.stack));
+// Neon connection strings carry their TLS settings (use sslmode=verify-full).
+// Do not override the URL with rejectUnauthorized: false.
+const pool = new Pool(production ? {
+  connectionString: process.env.DATABASE_URL,
+  max: 5,
+  connectionTimeoutMillis: 10000,
+  idleTimeoutMillis: 30000,
+} : {
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
+});
+
+pool.on("error", (err) => {
+  console.error("PostgreSQL idle connection error:", err.code || err.name);
+});
+
+// pool.query returns its connection automatically after the startup check.
+if (process.env.NODE_ENV !== "test") {
+  pool.query("SELECT 1")
+    .then(() => console.log("Connected to PostgreSQL database"))
+    .catch((err) => console.error("PostgreSQL startup check failed:", err.code || err.name));
+}
 
 module.exports = pool;
